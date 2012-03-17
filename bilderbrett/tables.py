@@ -22,10 +22,12 @@ class Post(Base):
 	content = Column(String, nullable=False)
 	password_hash = Column(String)
 	sage = Column(Boolean)
-	is_thread = Column(Boolean)
 	board_id = Column(String(5), ForeignKey("boards.id"), nullable=False)
 	time = Column(DateTime, nullable=False)
 	thread_id = Column(Integer, ForeignKey("posts.id"))
+
+	is_thread = Column(Boolean)
+	last_post_time = Column(DateTime)
 
 	posts = relationship("Post", order_by="Post.time")
 	board = relationship("Board", backref=backref("posts"))

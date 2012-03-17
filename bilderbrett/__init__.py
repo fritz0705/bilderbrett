@@ -46,20 +46,22 @@ def show_board(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
 		bottle.abort(404)
-	threads = session.query(Post).filter_by(board_id=board.id, is_thread=True).order_by(desc(Post.time))
+	threads = session.query(Post).filter_by(board_id=board.id, is_thread=True).order_by(desc(Post.last_post_time)).limit(5).offset(page * 5)
 
 	return template("board", threads=threads, board=board)
 
 @route("/<board:re:[a-z]+>/", method="POST")
 def new_thread(board):
 	session.begin()
+	time = datetime.now()
 	post = Post(
 			title=bottle.request.forms.subject,
 			author="Bernd",
 			content=bottle.request.forms.content,
 			is_thread=True,
 			board_id=board,
-			time=datetime.now()
+			time=datetime.now(),
+			last_post_time=datetime.now()
 		)
 	session.add(post)
 	session.flush()
@@ -67,7 +69,7 @@ def new_thread(board):
 	save_files(post, bottle.request.files)
 	session.commit()
 
-	return show_board(board)
+	bottle.redirect("/{0}/thread-{1}".format(board, post.id))
 
 @route("/<board:re:[a-z]+>/thread-<thread:int>")
 def show_thread(board, thread):
@@ -85,24 +87,31 @@ def show_thread(board, thread):
 
 @route("/<board:re:[a-z]+>/thread-<thread:int>", method="POST")
 def new_post(board, thread):
+	thread = session.query(Post).filter_by(id=thread, is_thread=True).first()
+	if thread == None:
+		bottle.abort(404)
+
 	session.begin()
 
+	time = datetime.now()
 	post = Post(
 			title=bottle.request.forms.subject,
 			author="Bernd",
 			content=bottle.request.forms.content,
 			is_thread=False,
-			time=datetime.now(),
+			time=time,
 			board_id=board,
-			thread_id=thread
+			thread_id=thread.id
 		)
+	thread.last_post_time = time
+	session.add(thread)
 	session.add(post)
 	session.flush()
 
 	save_files(post, bottle.request.files)
 
 	session.commit()
-	return show_thread(board, thread)
+	bottle.redirect("/{0}/thread-{1}".format(board, thread.id))
 
 @route("/")
 def index():

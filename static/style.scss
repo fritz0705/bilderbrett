@@ -36,8 +36,13 @@ form#post table {
 		right: auto;
 	}
 
+	td {
+		width: 75%;
+	}
+
 	th {
 		text-align: left;
+		width: 25%;
 	}
 
 	textarea {
