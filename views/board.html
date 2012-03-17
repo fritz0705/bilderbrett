@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% import "post.html" as post %}
-{% block title %}/{{ board.id }}/ – {{ board.title }}{% endblock %}
+{% block title %}<a href="/{{ board.id }}/">/{{ board.id }}/</a> – {{ board.title }}{% endblock %}
 {% block content %}
 {{ post.form() }}
 <div id="threads">
