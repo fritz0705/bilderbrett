@@ -5,6 +5,9 @@
 		<strong class="post_author">{{ post.author|e }}</strong>
 		<span class="post_time">{{ post.time }}</span>
 		<a class="post_id" href="/{{ post.board_id }}/thread-{{ post.thread_id or post.id }}#{{ post.id }}">No. {{ post.id }}</a>
+		{% if post.sage %}
+		<strong class="post_sage">SÄGE</strong>
+		{% endif %}
 	</div>
 	{% for attachment in post.attachments %}
 	<figure class="image">
@@ -21,12 +24,22 @@
 	</div>
 </article>
 {%- endmacro %}
-{% macro form() %}
+{% macro form(board) %}
 <form method="post" href="." id="post" enctype="multipart/form-data">
 	<table>
+		{% if board.allow_nicks %}
+		<tr>
+			<th>Name:</th>
+			<td><input type="text" name="name" /></td>
+		</tr>
+		{% endif %}
 		<tr>
 			<th>Subject:</th>
 			<td><input type="text" name="subject" /> <input type="submit" value="Submit" name="submit" /></td>
+		</tr>
+		<tr>
+			<th>Sage:</th>
+			<td><input type="checkbox" name="sage" /></td>
 		</tr>
 		<tr>
 			<th>Comment:</th>

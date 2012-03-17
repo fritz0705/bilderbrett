@@ -3,12 +3,12 @@
 {% block title %}/{{ board.id }}/ – {{ board.title }}{% endblock %}
 {% block headertitle %}<a href="/{{ board.id }}/">/{{ board.id }}/</a> – {{ board.title }}{% endblock %}
 {% block content %}
-{{ post.form() }}
+{{ post.form(board) }}
 <div id="threads">
 	{% for thread in threads %}
 	<div class="thread">
 		{{ post.render(thread) }}
-		{% for _post in thread.posts[-5:] %}
+		{% for _post in thread.posts[-2:] %}
 			{{ post.render(_post) }}
 		{% endfor %}
 	</div>

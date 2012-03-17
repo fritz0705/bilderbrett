@@ -50,6 +50,8 @@ form#post table {
     text-decoration: none; }
     .post .post_info .post_id:hover {
       font-weight: bold; }
+  .post .post_info .post_sage {
+    color: red; }
   .post .content {
     margin: 10px;
     clear: both; }

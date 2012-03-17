@@ -13,6 +13,9 @@ class Board(Base):
 	id = Column(String(5), primary_key=True, nullable=False)
 	title = Column(String)
 
+	allow_nicks = Column(Boolean)
+	default_nick = Column(String)
+
 class Post(Base):
 	__tablename__ = "posts"
 
@@ -20,8 +23,7 @@ class Post(Base):
 	title = Column(String)
 	author = Column(String)
 	content = Column(String, nullable=False)
-	password_hash = Column(String)
-	sage = Column(Boolean)
+	sage = Column(Boolean, default=False)
 	board_id = Column(String(5), ForeignKey("boards.id"), nullable=False)
 	time = Column(DateTime, nullable=False)
 	thread_id = Column(Integer, ForeignKey("posts.id"))

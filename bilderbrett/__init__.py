@@ -52,24 +52,31 @@ def show_board(board, page=0):
 
 @route("/<board:re:[a-z]+>/", method="POST")
 def new_thread(board):
+	board = session.query(Board).filter_by(id=board).first()
+	if board == None:
+		bottle.abort(404)
+
 	session.begin()
 	time = datetime.now()
 	post = Post(
 			title=bottle.request.forms.subject,
-			author="Bernd",
+			author=board.default_nick,
 			content=bottle.request.forms.content,
 			is_thread=True,
-			board_id=board,
+			board_id=board.id,
 			time=datetime.now(),
-			last_post_time=datetime.now()
+			last_post_time=datetime.now(),
+			sage=bool(bottle.request.forms.sage)
 		)
+	if board.allow_nicks and bool(bottle,request.forms.name):
+		post.author = bottle.request.forms.name
 	session.add(post)
 	session.flush()
 
 	save_files(post, bottle.request.files)
 	session.commit()
 
-	bottle.redirect("/{0}/thread-{1}".format(board, post.id))
+	bottle.redirect("/{0}/thread-{1}".format(board.id, post.id))
 
 @route("/<board:re:[a-z]+>/thread-<thread:int>")
 def show_thread(board, thread):
@@ -87,6 +94,10 @@ def show_thread(board, thread):
 
 @route("/<board:re:[a-z]+>/thread-<thread:int>", method="POST")
 def new_post(board, thread):
+	board = session.query(Board).filter_by(id=board).first()
+	if board == None:
+		bottle.abort(404)
+
 	thread = session.query(Post).filter_by(id=thread, is_thread=True).first()
 	if thread == None:
 		bottle.abort(404)
@@ -96,14 +107,18 @@ def new_post(board, thread):
 	time = datetime.now()
 	post = Post(
 			title=bottle.request.forms.subject,
-			author="Bernd",
+			author=board.default_nick,
 			content=bottle.request.forms.content,
 			is_thread=False,
 			time=time,
-			board_id=board,
-			thread_id=thread.id
+			board_id=board.id,
+			thread_id=thread.id,
+			sage=bool(bottle.request.forms.sage)
 		)
-	thread.last_post_time = time
+	if board.allow_nicks and bool(bottle.request.forms.name):
+		post.author = bottle.request.forms.name
+	if not post.sage:
+		thread.last_post_time = time
 	session.add(thread)
 	session.add(post)
 	session.flush()
@@ -111,7 +126,7 @@ def new_post(board, thread):
 	save_files(post, bottle.request.files)
 
 	session.commit()
-	bottle.redirect("/{0}/thread-{1}".format(board, thread.id))
+	bottle.redirect("/{0}/thread-{1}".format(board.id, thread.id))
 
 @route("/")
 def index():
