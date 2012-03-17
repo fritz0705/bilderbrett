@@ -68,7 +68,7 @@ def new_thread(board):
 			last_post_time=datetime.now(),
 			sage=bool(bottle.request.forms.sage)
 		)
-	if board.allow_nicks and bool(bottle,request.forms.name):
+	if board.allow_nicks and bool(bottle.request.forms.name):
 		post.author = bottle.request.forms.name
 	session.add(post)
 	session.flush()
