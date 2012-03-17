@@ -1,5 +1,5 @@
 {% macro render(post) %}
-<article class="post {% if post.is_thread %}first{% endif %}">
+<article class="post {% if post.is_thread %}first{% endif %}" id="{{ post.id }}">
 	<div class="post_info">
 		<strong class="post_title">{{ post.title|e }}</strong>
 		<strong class="post_author">{{ post.author|e }}</strong>
