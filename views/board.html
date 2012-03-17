@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% import "post.html" as post %}
+{% block title %}/{{ board.id }}/ – {{ board.title }}{% endblock %}
+{% block content %}
+{{ post.form() }}
+<div id="threads">
+	{% for thread in threads %}
+	<div class="thread">
+		{{ post.render(thread) }}
+		{% for _post in thread.posts[-5:] %}
+			{{ post.render(_post) }}
+		{% endfor %}
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

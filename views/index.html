@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}plaetzchan{% endblock %}
+{% block content %}
+<table class="boards">
+	{% for board in boards %}
+	<tr>
+		<td><a href="/{{ board.id }}/">/{{ board.id }}/</a></td>
+		<td><a href="/{{ board.id }}/">{{ board.title }}</a></td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}

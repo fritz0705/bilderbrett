@@ -1,0 +1,41 @@
+{% macro render(post) %}
+<article class="post {% if post.is_thread %}first{% endif %}">
+	<div class="post_info">
+		<strong class="post_title">{{ post.title|e }}</strong>
+		<strong class="post_author">{{ post.author|e }}</strong>
+		<span class="post_time">{{ post.time }}</span>
+		<a class="post_id" href="/{{ post.board_id }}/thread-{{ post.thread_id or post.id }}#{{ post.id }}">No. {{ post.id }}</a>
+	</div>
+	{% for attachment in post.attachments %}
+	<figure class="image">
+		<a href="/files/{{ attachment.id }}.{{ attachment.type }}">
+			<figcaption>{{ attachment.name }}</figcaption>
+			{% if attachment.is_image %}
+			<img src="/files/{{ attachment.id }}.{{ attachment.type }}" />
+			{% endif %}
+		</a>
+	</figure>
+	{% endfor %}
+	<div class="content">
+		{{ post.content|e }}
+	</div>
+</article>
+{%- endmacro %}
+{% macro form() %}
+<form method="post" href="." id="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<th>Subject:</th>
+			<td><input type="text" name="subject" /> <input type="submit" value="Submit" name="submit" /></td>
+		</tr>
+		<tr>
+			<th>Comment:</th>
+			<td><textarea name="content"></textarea></td>
+		</tr>
+		<tr>
+			<th>File:</th>
+			<td><input name="file[0]" type="file" /></td>
+		</tr>
+	</table>
+</form>
+{%- endmacro %}

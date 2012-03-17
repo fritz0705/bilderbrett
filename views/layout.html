@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" type="text/css" href="/static/style.css" />
+		<meta charset="utf-8" />
+	</head>
+
+	<body>
+		<header>
+			<!-- hier irgendein bild nach krautchan stil -->
+			<h1>{{ self.title() }}</h1>
+		</header>
+		{% block content %}{% endblock %}
+	</body>
+</html>
