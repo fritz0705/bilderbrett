@@ -34,7 +34,7 @@ def save_files(post, files):
 		type = file.filename.split(".")[-1].lower()
 		is_image = False
 
-		if re.match(r'(jpg|png|jpeg|gif)', type):
+		if re.match(r'(jpg|png|jpeg|gif|svg)', type):
 			is_image = True
 
 		attachment = Attachment(
@@ -63,7 +63,8 @@ def show_board(board, page=0):
 	return template("board", threads=threads, board=board, page=page, pages=[i for i in range(10)])
 
 @route("/<board:re:[a-z]+>/", method="POST")
-def new_thread(board):
+@route("/<board:re:[a-z]+>/<page:int>", method="POST")
+def new_thread(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
 		bottle.abort(404)
