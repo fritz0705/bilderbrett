@@ -24,8 +24,8 @@
 	</div>
 </article>
 {%- endmacro %}
-{% macro form(board) %}
-<form method="post" action="." id="post" enctype="multipart/form-data">
+{% macro form(board, thread=None) %}
+<form method="post" action="/{{ board.id }}/{% if thread != None %}thread-{{ thread.id }}{% endif %}" id="post" enctype="multipart/form-data">
 	<table>
 		{% if board.allow_nicks %}
 		<tr>
