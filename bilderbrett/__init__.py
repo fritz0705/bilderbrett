@@ -101,7 +101,7 @@ def show_thread(board, thread):
 	if thread == None:
 		bottle.abort(404)
 
-	posts = session.query(Post).filter_by(thread_id=thread.id)
+	posts = session.query(Post).filter_by(thread_id=thread.id).order_by(asc(Post.time))
 
 	return template("thread", board=board, thread=thread, posts=posts)
 
