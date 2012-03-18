@@ -8,10 +8,30 @@
 	{% for thread in threads %}
 	<div class="thread">
 		{{ post.render(thread) }}
+		{% if thread.posts|length > 2 %}
+		{{ thread.posts|length - 2 }} post(s) not shown.
+		{% endif %}
 		{% for _post in thread.posts[-2:] %}
 			{{ post.render(_post) }}
 		{% endfor %}
 	</div>
 	{% endfor %}
 </div>
+<nav id="pagination">
+	{% if page != 0 %}
+	[<a href="/{{ board.id }}/{{ page - 1 }}">Prev</a>]
+	{% endif %}
+	{% for _page in pages %}
+	{% if _page != page %}
+	<a href="/{{ board.id }}/{{ _page }}">
+	{% endif %}
+	{{ _page + 1 }}
+	{% if page != _page %}
+	</a>
+	{% endif %}
+	{% endfor %}
+	{% if page != 9 %}
+	[<a href="/{{ board.id }}/{{ page + 1 }}">Next</a>]
+	{% endif %}
+</nav>
 {% endblock %}

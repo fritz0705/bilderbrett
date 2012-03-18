@@ -4,7 +4,7 @@ SASS := sass
 all: static/style.css
 
 %.css: %.scss
-	$(SASS) $^ $@
+	$(SASS) $(SASSFLAGS) $^ $@
 
 clean:
 	rm -rf .sass-cache static/style.css

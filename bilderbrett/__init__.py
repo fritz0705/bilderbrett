@@ -43,12 +43,14 @@ def save_files(post, files):
 @route("/<board:re:[a-z]+>/")
 @route("/<board:re:[a-z]+>/<page:int>")
 def show_board(board, page=0):
+	if page >= 10 or page < 0:
+		bottle.abort(403)
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
 		bottle.abort(404)
 	threads = session.query(Post).filter_by(board_id=board.id, is_thread=True).order_by(desc(Post.last_post_time)).limit(5).offset(page * 5)
 
-	return template("board", threads=threads, board=board)
+	return template("board", threads=threads, board=board, page=page, pages=[i for i in range(10)])
 
 @route("/<board:re:[a-z]+>/", method="POST")
 def new_thread(board):
