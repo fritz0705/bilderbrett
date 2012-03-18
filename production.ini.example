@@ -1,0 +1,5 @@
+[database]
+url = sqlite:///production.db
+
+[server]
+socket = bilderbrett.sock1

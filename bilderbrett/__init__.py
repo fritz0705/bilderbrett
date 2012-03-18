@@ -10,12 +10,22 @@ from datetime import datetime
 import bottle
 from bottle import jinja2_template as template, route
 
-# TODO Make this more generic
+engine, session = None, None
+chunksize = 4096
+"""
 engine = create_engine("postgresql://fritz@/bilderbrett")
 Session = sessionmaker(bind=engine)
 session = Session(autocommit=True)
 
 Base.metadata.create_all(engine)
+"""
+
+def setup_database(engine_url=None, **kwargs):
+	if engine_url:
+		engine = create_engine(engine_url)
+	Base.metadata.create_all(engine)
+	Session = sessionmaker(bind=engine)
+	return Session(autocommit=True, **kwargs)
 
 def save_files(post, files):
 	import re
@@ -36,9 +46,9 @@ def save_files(post, files):
 		session.add(attachment)
 		session.flush()
 		
-		fd = open("files/{0}.{1}".format(attachment.id, attachment.type), "w+b")
-		fd.write(file.value)
-		fd.close()
+		with open("files/{0}.{1}".format(attachment.id, attachment.type), "w+b") as fd:
+			fd.write(file.value)
+			fd.close()
 
 @route("/<board:re:[a-z]+>/")
 @route("/<board:re:[a-z]+>/<page:int>")

@@ -1,5 +1,8 @@
 .*.swp
 .*.swo
+*.db
 *.pyc
+*.ini
 files/
 .sass-cache/
+bilderbrett.sock
