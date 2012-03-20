@@ -72,17 +72,17 @@ def new_thread(board, page=0):
 	session.begin()
 	time = datetime.now()
 	post = Post(
-			title=bottle.request.forms.subject,
+			title=bottle.request.forms.get('subject'),
 			author=board.default_nick,
-			content=bottle.request.forms.content,
+			content=bottle.request.forms.get('content'),
 			is_thread=True,
 			board_id=board.id,
 			time=datetime.now(),
 			last_post_time=datetime.now(),
-			sage=bool(bottle.request.forms.sage)
+			sage=bool(bottle.request.forms.get('sage'))
 		)
-	if board.allow_nicks and bool(bottle.request.forms.name):
-		post.author = bottle.request.forms.name
+	if board.allow_nicks and bool(bottle.request.forms.get('name')):
+		post.author = bottle.request.forms.get('name')
 	session.add(post)
 	session.flush()
 
@@ -119,17 +119,17 @@ def new_post(board, thread):
 
 	time = datetime.now()
 	post = Post(
-			title=bottle.request.forms.subject,
+			title=bottle.request.forms.get('subject'),
 			author=board.default_nick,
-			content=bottle.request.forms.content,
+			content=bottle.request.forms.get('content'),
 			is_thread=False,
 			time=time,
 			board_id=board.id,
 			thread_id=thread.id,
-			sage=bool(bottle.request.forms.sage)
+			sage=bool(bottle.request.forms.get('sage'))
 		)
-	if board.allow_nicks and bool(bottle.request.forms.name):
-		post.author = bottle.request.forms.name
+	if board.allow_nicks and bool(bottle.request.forms.get('name')):
+		post.author = bottle.request.forms.get('name')
 	if not post.sage:
 		thread.last_post_time = time
 	session.add(thread)
