@@ -143,7 +143,7 @@ def new_post(board, thread):
 
 @route("/")
 def index():
-	boards = session.query(Board)
+	boards = session.query(Board).filter_by(is_public=True)
 	return template("index", boards=boards)
 
 bottle_app = WSGIContainer(bottle.app())
