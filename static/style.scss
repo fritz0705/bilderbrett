@@ -112,3 +112,18 @@ form#post table {
 	}
 }
 
+nav#pagination {
+	border: 1px solid #7f7f7f;
+	padding: 5px;
+	margin: 5px;
+	display: inline;
+
+	a	{
+		display: inline-block;
+	}
+
+	.current {
+		color: inherit;
+		text-decoration: none;
+	}
+}
