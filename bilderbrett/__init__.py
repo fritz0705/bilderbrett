@@ -12,13 +12,6 @@ from bottle import jinja2_template as template, route
 
 engine, session = None, None
 chunksize = 4096
-"""
-engine = create_engine("postgresql://fritz@/bilderbrett")
-Session = sessionmaker(bind=engine)
-session = Session(autocommit=True)
-
-Base.metadata.create_all(engine)
-"""
 
 def setup_database(engine_url=None, **kwargs):
 	if engine_url:
@@ -46,9 +39,12 @@ def save_files(post, files):
 		session.add(attachment)
 		session.flush()
 		
-		with open("files/{0}.{1}".format(attachment.id, attachment.type), "w+b") as fd:
-			fd.write(file.value)
-			fd.close()
+		with open("files/{0}.{1}".format(attachment.id, attachment.type), "wb") as fd:
+			while True:
+				chunk = file.file.read(chunksize)
+				if len(chunk) == 0:
+					break
+				fd.write(chunk)
 
 @route("/<board:re:[a-z]+>/")
 @route("/<board:re:[a-z]+>/<page:int>")

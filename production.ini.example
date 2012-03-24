@@ -2,4 +2,6 @@
 url = sqlite:///production.db
 
 [server]
-socket = bilderbrett.sock1
+socket = bilderbrett.sock
+daemon = True
+pidfile = bilderbrett.pid

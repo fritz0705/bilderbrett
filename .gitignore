@@ -3,6 +3,8 @@
 *.db
 *.pyc
 *.ini
+*.pid
+*.sock
 files/
 .sass-cache/
-bilderbrett.sock
+__pycache__/
