@@ -15,6 +15,8 @@ def content_filter(content):
 	content = re.sub(r'\[spoiler\](.*)\[/spoiler\]', r'<span class="spoiler">\1</span>', content)
 	content = re.sub(r'\[i\](.*)\[/i\]', r'<i>\1</i>', content)
 	content = re.sub(r'\[b\](.*)\[/b\]', r'<b>\1</b>', content)
+	content = re.sub(r'\[s\](.*)\[/s\]', r'<s>\1<\s>', content)
+	content = re.sub(r'\[aa\](.*)\[/aa\]', r'<pre>\1</pre>', content)
 	content = "<p>" + content.replace("\r", "").replace("\n\n", "</p><p>") + "</p>"
 	return content
 
