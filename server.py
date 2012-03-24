@@ -11,7 +11,10 @@ import tornado.ioloop, tornado.httpserver
 
 if __name__ == '__main__':
 	config = configparser.ConfigParser()
-	config.read("production.ini")
+	try:
+		config.read(os.argv[1])
+	except:
+		config.read("production.ini")
 
 	sock = tornado.netutil.bind_unix_socket(config.get("server", "socket", fallback="bilderbrett.sock"))
 
@@ -32,6 +35,7 @@ if __name__ == '__main__':
 		os.setsid()
 
 	bilderbrett.session = bilderbrett.setup_database(config.get("database", "url", fallback="sqlite:///production.db"))
+	bilderbrett.config = config["board"]
 
 	server = tornado.httpserver.HTTPServer(app)
 	server.add_sockets([sock])

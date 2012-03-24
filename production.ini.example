@@ -3,5 +3,10 @@ url = sqlite:///production.db
 
 [server]
 socket = bilderbrett.sock
-daemon = True
+daemon = False
 pidfile = bilderbrett.pid
+
+[board]
+title = bilderbrett
+convert = /usr/bin/convert
+size = 200

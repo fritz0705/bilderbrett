@@ -6,5 +6,6 @@
 *.pid
 *.sock
 files/
+thumbnails/
 .sass-cache/
 __pycache__/

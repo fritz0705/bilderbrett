@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-{% block title %}bilderbrett{% endblock %}
-{% block headertitle %}bilderbrett{% endblock %}
+{% block title %}{{ config.get("title", "bilderbrett") }}{% endblock %}
+{% block headertitle %}{{ config.get("title", "bilderbrett") }}{% endblock %}
 {% block content %}
 <table class="boards">
 	{% for board in boards %}

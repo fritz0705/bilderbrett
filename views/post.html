@@ -14,7 +14,7 @@
 		<a href="/files/{{ attachment.id }}.{{ attachment.type }}">
 			<figcaption>{{ attachment.name }}</figcaption>
 			{% if attachment.is_image %}
-			<img src="/files/{{ attachment.id }}.{{ attachment.type }}" />
+			<img src="/thumbnails/{{ attachment.id }}.{{ attachment.type }}" />
 			{% endif %}
 		</a>
 	</figure>

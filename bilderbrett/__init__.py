@@ -2,15 +2,20 @@
 
 from tornado.web import Application, StaticFileHandler, FallbackHandler
 from tornado.wsgi import WSGIContainer
+
 from sqlalchemy import create_engine, asc, desc, and_, or_
 from sqlalchemy.orm import sessionmaker
+
 from bilderbrett.tables import Board, Post, Attachment, Base
+
+import subprocess
 from datetime import datetime
 
 import bottle
-from bottle import jinja2_template as template, route
+from bottle import jinja2_template, route
 
 engine, session = None, None
+config = None
 chunksize = 4096
 
 def setup_database(engine_url=None, **kwargs):
@@ -19,6 +24,22 @@ def setup_database(engine_url=None, **kwargs):
 	Base.metadata.create_all(engine)
 	Session = sessionmaker(bind=engine)
 	return Session(autocommit=True, **kwargs)
+
+def build_thumbnail(filename):
+	proc = subprocess.Popen(
+			[
+				"convert",
+				"files/" + filename,
+				"-resize",
+				config.get("size", "200"),
+				"thumbnails/" + filename
+			],
+			executable=config.get("convert", "convert")
+		)
+	proc.wait()
+
+def template(name, **kwargs):
+	return jinja2_template(name, config=config, **kwargs)
 
 def save_files(post, files):
 	import re
@@ -38,13 +59,16 @@ def save_files(post, files):
 			)
 		session.add(attachment)
 		session.flush()
+		filename = "{0}.{1}".format(attachment.id, attachment.type)
 		
-		with open("files/{0}.{1}".format(attachment.id, attachment.type), "wb") as fd:
+		with open("files/" + filename, "wb") as fd:
 			while True:
 				chunk = file.file.read(chunksize)
 				if len(chunk) == 0:
 					break
 				fd.write(chunk)
+		if attachment.is_image:
+			build_thumbnail(filename)
 
 @route("/<board:re:[a-z]+>/")
 @route("/<board:re:[a-z]+>/<page:int>")
@@ -146,5 +170,6 @@ bottle_app = WSGIContainer(bottle.app())
 app = Application([
 	(r'/static/(.*)', StaticFileHandler, dict(path="static/")),
 	(r'/files/(.*)', StaticFileHandler, dict(path="files/")),
+	(r'/thumbnails/(.*)', StaticFileHandler, dict(path="thumbnails/")),
 	(r'/.*', FallbackHandler, dict(fallback=bottle_app))
 ])
