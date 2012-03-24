@@ -13,7 +13,6 @@ if __name__ == '__main__':
 	config = configparser.ConfigParser()
 	config.read("production.ini")
 
-	bilderbrett.setup_database(config.get("database", "url", fallback="sqlite:///production.db"))
 	sock = tornado.netutil.bind_unix_socket(config.get("server", "socket", fallback="bilderbrett.sock"))
 
 	if config.getboolean("server", "daemon", fallback=False):
@@ -31,6 +30,8 @@ if __name__ == '__main__':
 		os.close(2)
 		os.dup2(null.fileno(), 2)
 		os.setsid()
+
+	bilderbrett.session = bilderbrett.setup_database(config.get("database", "url", fallback="sqlite:///production.db"))
 
 	server = tornado.httpserver.HTTPServer(app)
 	server.add_sockets([sock])
