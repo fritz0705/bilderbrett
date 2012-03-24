@@ -5,6 +5,7 @@
 *.ini
 *.pid
 *.sock
+*.log
 files/
 thumbnails/
 .sass-cache/
