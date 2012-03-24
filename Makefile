@@ -2,14 +2,27 @@ SASS := sass
 CONVERT := convert
 THUMB_SIZE := 200
 
-.PHONY: all clean thumbnails
-all: static/style.css
+.PHONY: all deploy thumbnails clean mrproper stylesheets
+all: deploy
 
-thumbnails:
-	for file in $$(ls files/); do $(CONVERT) files/$$file -resize $(THUMB_SIZE) thumbnails/$$file; done
+deploy:
+	mkdir -p files/
+	mkdir -p thumbnails/
+
+thumbnails: deploy
+	for file in $$(ls files/); \
+	do \
+		$(CONVERT) files/$$file -resize $(THUMB_SIZE) thumbnails/$$file; \
+	done;
+
+clean:
+	rm -rf .sass-cache static/style.css
+
+mrproper: clean
+	git clean -fdx
+
+stylesheets: static/style.css
 
 %.css: %.scss
 	$(SASS) $(SASSFLAGS) $^ $@
 
-clean:
-	rm -rf .sass-cache static/style.css
