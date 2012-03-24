@@ -51,7 +51,7 @@ def start_server(config):
 				file.flush()
 			sys.exit(0)
 
-		logfile = open(config.get("server", "pidfile", fallback="/dev/null"), "w+")
+		logfile = open(config.get("server", "logfile", fallback="/dev/null"), "w+")
 		os.close(0)
 		os.dup2(logfile.fileno(), 0)
 		os.close(1)
