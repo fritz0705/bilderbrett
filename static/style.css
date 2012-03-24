@@ -77,3 +77,9 @@ nav#pagination {
   nav#pagination .current {
     color: inherit;
     text-decoration: none; }
+
+.spoiler {
+  background: black;
+  color: black; }
+  .spoiler:hover {
+    color: white; }

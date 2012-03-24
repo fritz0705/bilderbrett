@@ -8,12 +8,17 @@ from sqlalchemy.orm import sessionmaker
 
 from bilderbrett.tables import Board, Post, Attachment, Base
 
+import bilderbrett.templates
+
 import subprocess
 from datetime import datetime
 
 import bottle
-from bottle import jinja2_template, route
+route = bottle.route
 
+import jinja2
+
+env = jinja2.Environment(loader=jinja2.FileSystemLoader("views/"))
 engine, session = None, None
 config = None
 chunksize = 4096
@@ -38,7 +43,7 @@ def build_thumbnail(filename):
 		)
 
 def template(name, **kwargs):
-	return jinja2_template(name, config=config, **kwargs)
+	return bilderbrett.templates.render(name, config=config, **kwargs)
 
 def save_files(post, files):
 	import re

@@ -127,3 +127,12 @@ nav#pagination {
 		text-decoration: none;
 	}
 }
+
+.spoiler {
+	background: black;
+	color: black;
+
+	&:hover {
+		color: white;
+	}
+}
