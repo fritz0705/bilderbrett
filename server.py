@@ -13,7 +13,7 @@ import tornado.ioloop, tornado.httpserver
 
 argparser = argparse.ArgumentParser()
 
-argparser.add_argument('action', choices=("start", "stop", "status"))
+argparser.add_argument('action', choices=("start", "stop", "status", "restart"))
 argparser.add_argument('--daemon', '-d', action='store_true')
 argparser.add_argument('--config', '-c',
 		default="production.ini",
@@ -77,6 +77,10 @@ def start_server(config):
 	server.add_sockets(socks)
 	tornado.ioloop.IOLoop.instance().start()
 
+def restart_server(config):
+	stop_server(config)
+	start_server(config)
+
 if __name__ == '__main__':
 	args = argparser.parse_args()
 
@@ -87,3 +91,5 @@ if __name__ == '__main__':
 		start_server(config)
 	elif args.action == "stop":
 		stop_server(config)
+	elif args.action == "restart":
+		restart_server(config)
