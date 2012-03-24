@@ -2,41 +2,88 @@
 # coding: utf-8
 
 import configparser
+import argparse
 import os
 import sys
+import signal
 
 import bilderbrett
 from bilderbrett import app
 import tornado.ioloop, tornado.httpserver
 
-if __name__ == '__main__':
-	config = configparser.ConfigParser()
-	try:
-		config.read(os.argv[1])
-	except:
-		config.read("production.ini")
+argparser = argparse.ArgumentParser()
 
-	sock = tornado.netutil.bind_unix_socket(config.get("server", "socket", fallback="bilderbrett.sock"))
+argparser.add_argument('action', choices=("start", "stop", "status"))
+argparser.add_argument('--daemon', '-d', action='store_true')
+argparser.add_argument('--config', '-c',
+		default="production.ini",
+		action="store",
+		help="set configuration file")
+
+def stop_server(config):
+	if not config.getboolean("server", "daemon", fallback=False):
+		sys.stderr.write("Assertion failed: server.daemon == True\n")
+		sys.exit(1)
+	
+	pidfile = open(config.get("server", "pidfile", fallback="bilderbrett.pid"), "r")
+	pid = int(pidfile.read())
+
+	os.kill(pid, signal.SIGINT)
+
+def start_server(config):
+	socket = config.get("server", "address", fallback="@bilderbrett.sock")
+	socks = []
+	
+	if socket[0] == '@':
+		mode = int(config.get("server", "mode", fallback="0666"), 8)
+		socks = [ tornado.netutil.bind_unix_socket(socket[1:], mode=mode) ]
+	else:
+		port = config.getint("server", "port", fallback=8080)
+		socks = tornado.netutil.bind_sockets(port, socket)
 
 	if config.getboolean("server", "daemon", fallback=False):
 		pid = os.fork()
 		if pid != 0:
+			sys.stderr.write("PID: {0}\n".format(pid))
 			with open(config.get("server", "pidfile", fallback="bilderbrett.pid"), "w") as file:
 				file.write(str(pid))
 				file.write("\n")
+				file.flush()
 			sys.exit(0)
-		null = open("/dev/null", "w+")
-		os.close(0)
-		os.dup2(null.fileno(), 0)
-		os.close(1)
-		os.dup2(null.fileno(), 1)
-		os.close(2)
-		os.dup2(null.fileno(), 2)
-		os.setsid()
 
+		logfile = open(config.get("server", "pidfile", fallback="/dev/null"), "w+")
+		os.close(0)
+		os.dup2(logfile.fileno(), 0)
+		os.close(1)
+		os.dup2(logfile.fileno(), 1)
+		os.close(2)
+		os.dup2(logfile.fileno(), 2)
+		os.setsid()
+	
 	bilderbrett.session = bilderbrett.setup_database(config.get("database", "url", fallback="sqlite:///production.db"))
 	bilderbrett.config = config["board"]
 
+	def sigint_handler(signum, frame):
+		sys.stderr.write("Killed with SIGINT\n")
+		try:
+			if config.getboolean("server", "daemon", fallback=False):
+				os.unlink(config.get("server", "pidfile", fallback="bilderbrett.pid"))
+		except: pass
+		sys.exit(0)
+	
+	signal.signal(signal.SIGINT, sigint_handler)
+
 	server = tornado.httpserver.HTTPServer(app)
-	server.add_sockets([sock])
+	server.add_sockets(socks)
 	tornado.ioloop.IOLoop.instance().start()
+
+if __name__ == '__main__':
+	args = argparser.parse_args()
+
+	config = configparser.ConfigParser()
+	config.read(args.config)
+
+	if args.action == "start":
+		start_server(config)
+	elif args.action == "stop":
+		stop_server(config)

@@ -29,14 +29,13 @@ def build_thumbnail(filename):
 	proc = subprocess.Popen(
 			[
 				"convert",
-				"files/" + filename,
+				"files/" + filename + "[0]",
 				"-resize",
 				config.get("size", "200"),
 				"thumbnails/" + filename
 			],
 			executable=config.get("convert", "convert")
 		)
-	proc.wait()
 
 def template(name, **kwargs):
 	return jinja2_template(name, config=config, **kwargs)
