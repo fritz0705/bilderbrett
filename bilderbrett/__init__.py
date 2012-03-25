@@ -45,6 +45,20 @@ def build_thumbnail(filename):
 def template(name, **kwargs):
 	return bilderbrett.templates.render(name, config=config, **kwargs)
 
+def tripcode(name):
+	import hashlib
+
+	if not "#" in name:
+		return (name, None)
+
+	author, input = name.split("#", 1)
+	input = input.encode()
+
+	if input[0] != "#":
+		return (author, "!" + hashlib.md5(input).hexdigest()[:10])
+
+	return (author, "!!" + hashlib.sha512(input).hexdigest()[:len(input)])
+
 def save_files(post, files):
 	import re
 	for filename in files:
@@ -123,7 +137,7 @@ def new_thread(board, page=0):
 			sage=bool(bottle.request.forms.get('sage'))
 		)
 	if board.allow_nicks and bool(bottle.request.forms.get('name')):
-		post.author = bottle.request.forms.get('name')
+		post.author, post.tripcode = tripcode(bottle.request.forms.get('name'))
 	session.add(post)
 	session.flush()
 
@@ -170,7 +184,7 @@ def new_post(board, thread):
 			sage=bool(bottle.request.forms.get('sage'))
 		)
 	if board.allow_nicks and bool(bottle.request.forms.get('name')):
-		post.author = bottle.request.forms.get('name')
+		post.author, post.tripcode = tripcode(bottle.request.forms.get('name'))
 	if not post.sage:
 		thread.last_post_time = time
 	session.add(thread)

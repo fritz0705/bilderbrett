@@ -34,6 +34,7 @@ class Post(Base):
 
 	is_thread = Column(Boolean)
 	last_post_time = Column(DateTime)
+	tripcode = Column(String)
 
 	posts = relationship("Post", order_by="Post.time")
 	board = relationship("Board", backref=backref("posts"))

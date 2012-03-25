@@ -45,6 +45,8 @@ form#post table {
     font-size: 18px; }
   .post .post_info .post_author {
     color: blue; }
+  .post .post_info .post_tripcode {
+    color: green; }
   .post .post_info .post_id {
     color: black;
     text-decoration: none; }

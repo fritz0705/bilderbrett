@@ -3,6 +3,9 @@
 	<div class="post_info">
 		<strong class="post_title">{{ post.title|e }}</strong>
 		<strong class="post_author">{{ post.author|e }}</strong>
+		{% if post.tripcode %}
+		<span class="post_tripcode">{{ post.tripcode }}</span>
+		{% endif %}
 		<span class="post_time">{{ post.time }}</span>
 		<a class="post_id" href="/{{ post.board_id }}/thread-{{ post.thread_id or post.id }}#{{ post.id }}">No. {{ post.id }}</a>
 		{% if post.sage %}
