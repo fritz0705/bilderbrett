@@ -74,6 +74,17 @@ def save_files(post, files):
 		if attachment.is_image:
 			build_thumbnail(filename)
 
+@route("/_resolve/<post:int>")
+def resolve_post(post):
+	post = session.query(Post).filter_by(id=post).first()
+	if post == None:
+		bottle.abort(404)
+	
+	if post.is_thread:
+		bottle.redirect("/{0}/thread-{1}".format(post.board_id, post.id))
+	else:
+		bottle.redirect("/{0}/thread-{1}#{2}".format(post.board_id, post.thread_id, post.id))
+
 @route("/<board:re:[a-z]+>/")
 @route("/<board:re:[a-z]+>/<page:int>")
 def show_board(board, page=0):
