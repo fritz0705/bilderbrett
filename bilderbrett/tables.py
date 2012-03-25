@@ -18,6 +18,7 @@ class Board(Base):
 	is_public = Column(Boolean)
 	pages = Column(Integer, default=10)
 	description = Column(String)
+	need_attachmet = Column(Boolean, default=True)
 
 class Post(Base):
 	__tablename__ = "posts"

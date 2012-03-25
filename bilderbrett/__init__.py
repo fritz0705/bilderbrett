@@ -107,7 +107,7 @@ def new_thread(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
 		bottle.abort(404)
-	if 0 == len(bottle.request.files):
+	if 0 == len(bottle.request.files) and board.need_attachment:
 		bottle.abort(403)
 
 	session.begin()
