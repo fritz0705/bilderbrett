@@ -16,6 +16,7 @@ class Board(Base):
 	allow_nicks = Column(Boolean)
 	default_nick = Column(String)
 	is_public = Column(Boolean)
+	pages = Column(Integer, default=10)
 
 class Post(Base):
 	__tablename__ = "posts"
