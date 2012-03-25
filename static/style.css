@@ -83,3 +83,13 @@ nav#pagination {
   color: black; }
   .spoiler:hover {
     color: white; }
+
+q {
+  margin: 0px;
+  padding: 0px;
+  color: #007777;
+  display: inline; }
+  q:before {
+    content: '>>'; }
+  q:after {
+    content: ''; }

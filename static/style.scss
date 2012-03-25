@@ -136,3 +136,18 @@ nav#pagination {
 		color: white;
 	}
 }
+
+q {
+	margin: 0px;
+	padding: 0px;
+	color: #007777;
+	display: inline;
+
+	&:before {
+		content: '>>';
+	}
+
+	&:after {
+		content: '';
+	}
+}
