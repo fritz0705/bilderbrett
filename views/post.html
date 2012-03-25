@@ -11,8 +11,8 @@
 	</div>
 	{% for attachment in post.attachments %}
 	<figure class="image">
+		<figcaption><a href="/files/{{ attachment.id }}.{{ attachment.type }}">{{ attachment.name }}</a></figcaption>
 		<a href="/files/{{ attachment.id }}.{{ attachment.type }}">
-			<figcaption>{{ attachment.name }}</figcaption>
 			{% if attachment.is_image %}
 			<img src="/thumbnails/{{ attachment.id }}.{{ attachment.type }}" />
 			{% endif %}
