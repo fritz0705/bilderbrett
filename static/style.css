@@ -84,6 +84,9 @@ nav#pagination {
   .spoiler:hover {
     color: white; }
 
+article#description {
+  text-align: center; }
+
 q {
   margin: 0px;
   padding: 0px;

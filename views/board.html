@@ -4,6 +4,9 @@
 {% block headertitle %}<a href="/{{ board.id }}/">/{{ board.id }}/</a> – {{ board.title }}{% endblock %}
 {% block content %}
 {{ post.form(board) }}
+<article id="description">
+	{{ board.description }}
+</article>
 <div id="threads">
 	{% for thread in threads %}
 	<div class="thread">
