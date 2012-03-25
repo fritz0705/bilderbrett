@@ -94,7 +94,7 @@ def show_board(board, page=0):
 	if page >= board.pages:
 		bottle.abort(403)
 	threads = session.query(Post).filter_by(board_id=board.id, is_thread=True).order_by(desc(Post.last_post_time)).limit(5).offset(page * 5)
-	pages_count = session.query(Post).filter_by(board_id=board.id, is_thread=True).count() // 5 + 1
+	pages_count = (session.query(Post).filter_by(board_id=board.id, is_thread=True).count() - 1) // 5 + 1
 	if pages_count > board.pages:
 		pages_count = board.pages
 	pages = [i for i in range(pages_count)]
