@@ -107,6 +107,8 @@ def new_thread(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
 		bottle.abort(404)
+	if 0 == len(bottle.request.files):
+		bottle.abort(403)
 
 	session.begin()
 	time = datetime.now()
@@ -184,6 +186,10 @@ def new_post(board, thread):
 def index():
 	boards = session.query(Board).filter_by(is_public=True)
 	return template("index", boards=boards)
+
+@route("/robots.txt")
+def robots_txt():
+	return 'User-Agent: *\nDisallow: /'
 
 bottle_app = WSGIContainer(bottle.app())
 app = Application([
