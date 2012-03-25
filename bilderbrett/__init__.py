@@ -81,7 +81,7 @@ def show_board(board, page=0):
 	if board == None:
 		bottle.abort(404)
 	threads = session.query(Post).filter_by(board_id=board.id, is_thread=True).order_by(desc(Post.last_post_time)).limit(5).offset(page * 5)
-	pages_count = session.query(Post).filter_by(board_id=board.id, is_thread=True).count() // 5
+	pages_count = session.query(Post).filter_by(board_id=board.id, is_thread=True).count() // 5 + 1
 	pages = [i for i in range(pages_count)]
 
 	return template("board", threads=threads, board=board, page=page, pages=pages)
