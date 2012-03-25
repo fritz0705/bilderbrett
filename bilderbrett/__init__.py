@@ -85,8 +85,8 @@ def resolve_post(post):
 	else:
 		bottle.redirect("/{0}/thread-{1}#{2}".format(post.board_id, post.thread_id, post.id))
 
-@route("/<board:re:[a-z]+>/")
-@route("/<board:re:[a-z]+>/<page:int>")
+@route("/<board:re:[a-z0-9]+>/")
+@route("/<board:re:[a-z0-9]+>/<page:int>")
 def show_board(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
@@ -101,8 +101,8 @@ def show_board(board, page=0):
 
 	return template("board", threads=threads, board=board, page=page, pages=pages)
 
-@route("/<board:re:[a-z]+>/", method="POST")
-@route("/<board:re:[a-z]+>/<page:int>", method="POST")
+@route("/<board:re:[a-z0-9]+>/", method="POST")
+@route("/<board:re:[a-z0-9]+>/<page:int>", method="POST")
 def new_thread(board, page=0):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
@@ -132,7 +132,7 @@ def new_thread(board, page=0):
 
 	bottle.redirect("/{0}/thread-{1}".format(board.id, post.id))
 
-@route("/<board:re:[a-z]+>/thread-<thread:int>")
+@route("/<board:re:[a-z0-9]+>/thread-<thread:int>")
 def show_thread(board, thread):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
@@ -146,7 +146,7 @@ def show_thread(board, thread):
 
 	return template("thread", board=board, thread=thread, posts=posts)
 
-@route("/<board:re:[a-z]+>/thread-<thread:int>", method="POST")
+@route("/<board:re:[a-z0-9]+>/thread-<thread:int>", method="POST")
 def new_post(board, thread):
 	board = session.query(Board).filter_by(id=board).first()
 	if board == None:
