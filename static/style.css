@@ -85,7 +85,8 @@ nav#pagination {
     color: white; }
 
 article#description {
-  text-align: center; }
+  text-align: center;
+  margin-bottom: 10px; }
 
 q {
   margin: 0px;
