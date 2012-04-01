@@ -98,6 +98,32 @@ def restart_server(config):
 	stop_server(config)
 	start_server(config)
 
+def status_server(config):
+	if not config.getboolean("server", "daemon", fallback=False):
+		sys.stderr.write("The status subcommand is only available in daemon mode\n")
+		sys.exit(1)
+	
+	pidfile = config.get("server", "pidfile", fallback="bilderbrett.pid")
+	try:
+		fd = open(pidfile)
+		pid = int(fd.read())
+
+		os.kill(pid, 0)
+		
+		print("PID: {0}".format(pid))
+	except IOError as e:
+		if e.errno == errno.ENOENT:
+			print("The daemon is not running")
+			sys.exit(0)
+		sys.stderr.write("An error occured while reading the pidfile: {0}\n".format(e.strerror))
+		sys.exit(1)
+	except OSError as e:
+		if e.errno == errno.ESRCH:
+			print("The daemon is not running")
+			sys.exit(0)
+		sys.stderr.write("An error occured: {0}\n".format(e.strerror))
+		sys.exit(1)
+
 if __name__ == '__main__':
 	args = argparser.parse_args()
 
@@ -110,3 +136,5 @@ if __name__ == '__main__':
 		stop_server(config)
 	elif args.action == "restart":
 		restart_server(config)
+	elif args.action == "status":
+		status_server(config)
