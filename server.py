@@ -6,6 +6,7 @@ import argparse
 import os
 import sys
 import signal
+import errno
 
 import bilderbrett
 from bilderbrett import app
@@ -42,6 +43,22 @@ def start_server(config):
 		socks = tornado.netutil.bind_sockets(port, socket)
 
 	if config.getboolean("server", "daemon", fallback=False):
+		try:
+			pidfile = open(config.get("server", "pidfile", fallback="bilderbrett.pid"))
+			pid = int(pidfile.read())
+			os.kill(pid, 0)
+		except IOError as e:
+			if e.errno != errno.ENOENT:
+				sys.stderr.write("An error occured while checking the pidfiled: {0}\n".format(e.strerror))
+				os.exit(1)
+		except OSError as e:
+			if e.errno != errno.ESRCH:
+				sys.stderr.write("The pidfile is already in use\n")
+				sys.exit(1)
+		else:
+			sys.stderr.write("The pidfile is already in use\n")
+			sys.exit(1)
+
 		pid = os.fork()
 		if pid != 0:
 			sys.stderr.write("PID: {0}\n".format(pid))
